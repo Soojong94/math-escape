@@ -6,7 +6,7 @@
 import { el } from "../ui.js";
 import { audio } from "../audio.js";
 
-export function renderChapters(host, { rooms, cleared, onSelect, onBack }) {
+export function renderChapters(host, { rooms, cleared, onSelect, onBack, onReset }) {
   const cards = rooms.map((room, i) => {
     const isCleared = cleared.has(room.id);
     const isUnlocked = i === 0 || cleared.has(rooms[i - 1].id);
@@ -56,10 +56,20 @@ export function renderChapters(host, { rooms, cleared, onSelect, onBack }) {
         ]),
       ]),
       el("div.chapters__grid", {}, cards),
-      el("div", { style: { marginTop: "36px", textAlign: "center" } }, [
+      el("div", { style: { marginTop: "36px", textAlign: "center", display: "flex", gap: "10px", justifyContent: "center" } }, [
         el("button.btn.btn--ghost.btn--small", {
           onclick: () => { audio.click(); onBack(); },
         }, ["← BACK"]),
+        clearedCount > 0 && onReset
+          ? el("button.btn.btn--ghost.btn--small", {
+              onclick: () => {
+                if (!confirm("저장된 진행 상황을 모두 초기화할까요?")) return;
+                audio.click();
+                onReset();
+              },
+              title: "localStorage에 저장된 클리어 기록을 모두 지움",
+            }, ["RESET PROGRESS"])
+          : null,
       ]),
     ]),
   ]);

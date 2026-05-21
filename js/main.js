@@ -47,6 +47,11 @@ async function go(route) {
         cleared: state.cleared,
         onSelect: (roomId) => go({ name: "room", roomId }),
         onBack: () => go({ name: "intro" }),
+        onReset: () => {
+          state.cleared = new Set();
+          persist();
+          go({ name: "chapters" });
+        },
       });
       break;
     case "room": {
