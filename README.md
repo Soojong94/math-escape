@@ -8,12 +8,16 @@
 
 | # | 방 | 수학 개념 |
 |---|---|---|
-| 01 | Binary Firewall | 조합 · 격자 경로 · 중심 대칭 짝짓기 |
-| 02 | Mirror Chamber | 에라토스테네스의 채 · 쌍둥이 소수 |
-| 03 | Ancient Temple | 중국인의 나머지 정리 (CRT) · 모듈러 역원 |
-| 04 | Quantum Casino | 페르마 소정리 · 원시근 · 이산 로그 |
+| 01 | Binary Firewall    | 조합 · 격자 경로 · 중심 대칭 짝짓기 |
+| 02 | Mirror Chamber     | 에라토스테네스의 채 · 쌍둥이 소수 |
+| 03 | Ancient Temple     | 중국인의 나머지 정리 (CRT) · 모듈러 역원 |
+| 04 | Quantum Casino     | 페르마 소정리 · 원시근 · 이산 로그 |
+| 05 | Matrix Vault       | 선형 변환 · 행렬식 · 면적 배율 |
+| 06 | Eigenchamber       | 고유값 · 고유벡터 · 불변 방향 |
+| 07 | Regression Lab     | 최소제곱 · MSE · 선형 회귀 |
+| 08 | Recursion Reactor  | 점화식 · 피보나치 · 동적 계획법 |
 
-각 방의 헤더 `📐 CONCEPT` 버튼으로 정의·정리·역사적 배경을 펼쳐 볼 수 있습니다.
+각 방의 헤더 `📐 CONCEPT` 버튼으로 정의·맥락·응용을 펼쳐 볼 수 있습니다. 답이 직접 노출되지 않도록 *원리·시각 단서* 중심으로 작성됐어요. 클리어 여부와 상관없이 어떤 방이든 자유롭게 들어갈 수 있습니다.
 
 ## 로컬 실행
 
@@ -59,7 +63,11 @@ escape/
         ├── firewall.js
         ├── mirror.js
         ├── temple.js
-        └── casino.js
+        ├── casino.js
+        ├── matrix.js
+        ├── eigen.js
+        ├── regression.js
+        └── recursion.js
 ```
 
 새 방을 추가하려면 `js/rooms/<id>.js` 파일에서 `RoomModule` 인터페이스를 export 하고 `js/rooms/index.js` 의 배열에 추가하기만 하면 됩니다.

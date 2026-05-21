@@ -9,23 +9,21 @@ import { audio } from "../audio.js";
 export function renderChapters(host, { rooms, cleared, onSelect, onBack, onReset }) {
   const cards = rooms.map((room, i) => {
     const isCleared = cleared.has(room.id);
-    const isUnlocked = i === 0 || cleared.has(rooms[i - 1].id);
+    // No lock — any implemented room is freely enterable in any order.
 
     let statusText = "READY";
     if (isCleared) statusText = "CLEARED";
-    else if (!isUnlocked) statusText = "ENCRYPTED";
     else if (!room.implemented) statusText = "COMING SOON";
 
     return el(
-      "button.chapter-card" + (isCleared ? ".cleared" : "") + (!isUnlocked || !room.implemented ? ".locked" : ""),
+      "button.chapter-card" + (isCleared ? ".cleared" : "") + (!room.implemented ? ".locked" : ""),
       {
         onclick: () => {
-          if (!isUnlocked) return audio.error();
           if (!room.implemented) return audio.error();
           audio.click();
           onSelect(room.id);
         },
-        onmouseenter: () => isUnlocked && room.implemented && audio.hover(),
+        onmouseenter: () => room.implemented && audio.hover(),
       },
       [
         el("div", {}, [
