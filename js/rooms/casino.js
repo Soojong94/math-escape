@@ -175,9 +175,10 @@ export const casino = {
     api.logMany([
       { who: "SYS", text: "양자 카지노 — 소수 23 의 잔여류 순환.", tag: "system" },
       { who: "OBSERVER", text: `g = ${G} 는 23 의 원시근. 1..22 가 5¹, 5², … 안에 모두 들어 있다.`, tag: "warn" },
-      { who: "SYS",      text: "TIP: 입력란에 x 를 적으면 5^x mod 23 의 결과 위치가 미리 보인다.", tag: "system" },
+      { who: "OBSERVER", text: `${G}^x ≡ ${Y} (mod ${P}) 를 만족하는 지수 x 를 찾아 입력해라.`, tag: "warn" },
+      { who: "SYS",      text: "TIP: 입력란에 x 를 적으면 5^x mod 23 의 결과 위치가 격자에 실시간 표시된다.", tag: "system" },
     ]);
-    api.setInputPlaceholder("x = ?   (preview live)");
+    api.setInputPlaceholder(`x  →  ${G}^x mod ${P} = ${Y}`);
 
     // ----------------------------------------------------------
     function setMarker(val) {
