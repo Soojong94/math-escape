@@ -94,10 +94,8 @@ export const mirror = {
     const meta = el("div.firewall__meta", {}, [
       el("span", {}, ["SIEVE OF ERATOSTHENES  //  1 … 100"]),
       el("span", {}, [
-        "PRIMES ",
-        el("b", { id: "mr-primes" }, ["00 / 25"]),
-        el("span.mute", {}, ["  ·  TWIN PAIRS "]),
-        el("b", { id: "mr-twin" }, ["0"]),
+        "PRIMES FOUND  ",
+        el("b", { id: "mr-primes" }, ["00"]),
       ]),
     ]);
 
@@ -123,7 +121,6 @@ export const mirror = {
         el("span", {}, ["click → mark multiples"]),
         el("span.accent", {}, ["■ prime"]),
         el("span.dim", {}, ["✕ composite"]),
-        el("span.success", {}, ["▬ twin prime pair"]),
       ]),
     ]);
     api.stage.appendChild(stage);
@@ -164,36 +161,22 @@ export const mirror = {
     }
 
     function render() {
+      // True sieve simulation: a cell counts as "prime" only when it is NOT
+      // in the composite set the user has built up. Before the user marks
+      // multiples, every cell (except 1) appears as a candidate — so the
+      // grid does not pre-reveal which numbers are prime. Twin pairs are
+      // never auto-highlighted; the player has to spot consecutive primes
+      // with gap = 2 themselves.
       let primesFound = 0;
       for (let n = 1; n <= N_MAX; n++) {
         const cell = cells[n - 1];
-        if (composite.has(n)) {
-          cell.classList.add("composite");
-          cell.classList.remove("prime");
-        } else {
-          cell.classList.remove("composite");
-          if (isPrime(n)) {
-            cell.classList.add("prime");
-            primesFound++;
-          }
-        }
+        const isComp = composite.has(n);
+        cell.classList.toggle("composite", isComp);
+        cell.classList.toggle("prime", !isComp && n > 1);
+        if (!isComp && n > 1) primesFound++;
       }
-      // twin pairs only highlighted once both members are revealed as primes
-      let twinShown = 0;
-      for (const [a, b] of TWIN_PAIRS) {
-        const visible = cells[a - 1].classList.contains("prime")
-                     && cells[b - 1].classList.contains("prime");
-        cells[a - 1].classList.toggle("twin", visible);
-        cells[b - 1].classList.toggle("twin", visible);
-        if (visible) twinShown++;
-      }
-      document.getElementById("mr-primes").textContent =
-        String(primesFound).padStart(2, "0") + " / 25";
-      document.getElementById("mr-twin").textContent = String(twinShown);
-
-      if (primesFound === 25 && twinShown === 0 && composite.size > 1) {
-        // edge case — primes computed by isPrime(), twin should appear automatically
-      }
+      const elc = document.getElementById("mr-primes");
+      if (elc) elc.textContent = String(primesFound).padStart(2, "0");
     }
 
     render();
