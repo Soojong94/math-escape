@@ -716,9 +716,10 @@ body {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 16px 20px;
+  padding: 14px 18px;
   flex: 1;
   min-height: 0;
+  height: 100%;
 }
 
 .firewall__meta {
@@ -739,14 +740,19 @@ body {
   place-items: center;
   position: relative;
   min-height: 0;
+  padding: 6px;
 }
 
 .firewall__svg {
+  /* Fill whatever space the stage gives us, keeping the SVG square.
+     min(W, H) wins because of aspect-ratio: 1/1. */
   width: 100%;
-  height: auto;
-  max-width: 360px;
+  height: 100%;
+  max-width: 100%;
   max-height: 100%;
   aspect-ratio: 1 / 1;
+  /* keep it from blowing past the stage when the panel is very wide */
+  object-fit: contain;
   filter: drop-shadow(0 0 14px rgba(124, 200, 255, 0.18));
 }
 
@@ -873,12 +879,14 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 14px;
-  padding: 22px 18px;
+  padding: 18px;
   background: #0c0820;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   position: relative;
-  flex-shrink: 0;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
 }
 
 .lights__grid {
@@ -931,20 +939,23 @@ body {
 .sieve-grid {
   display: grid;
   grid-template-columns: repeat(10, 1fr);
-  gap: 4px;
+  gap: 5px;
   width: 100%;
-  max-width: 420px;
+  /* Sieve has 10 columns, so width determines cell size. Let it grow. */
+  max-width: min(560px, 100%);
+  max-height: 100%;
+  aspect-ratio: 1 / 1;
   margin: 0 auto;
 }
 
 .sieve-cell {
   aspect-ratio: 1 / 1;
-  border-radius: 6px;
+  border-radius: 7px;
   background: #0a071a;
   border: 1px solid rgba(160, 140, 240, 0.18);
   color: var(--fg-dim);
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 500;
   cursor: pointer;
   display: grid;
@@ -994,27 +1005,31 @@ body {
 
 .crt-row {
   display: flex;
-  gap: 20px;
+  gap: 16px;
   flex-wrap: wrap;
   justify-content: center;
-  padding: 12px 0;
+  align-items: stretch;
+  padding: 4px 0;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 .crt-dial {
-  flex: 1 1 170px;
-  max-width: 200px;
+  flex: 1 1 220px;
+  max-width: 320px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 14px 10px 12px;
+  padding: 16px 14px 14px;
   background: #0c0820;
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  gap: 8px;
+  gap: 10px;
 }
 .crt-svg {
   width: 100%;
   height: auto;
-  max-width: 170px;
+  max-width: 100%;
+  aspect-ratio: 1 / 1;
 }
 .crt-head {
   display: flex;
