@@ -7,7 +7,8 @@
 // Insight   : Fermat — g^{p-1} ≡ 1 (mod p). 즉 22 주기로 순환.
 //             원시근이면 5^1, 5^2, ..., 5^22 가 1..22 의 *순열*.
 //             일반적으로 x 를 찾는 것은 어려운 문제 (이산 로그).
-// Answer    : 12   (5^12 mod 23 = 18)
+// UX        : 자동 STEP 추적은 제거. 사용자가 x 를 입력하면 그 결과 위치를
+//             실시간 미리보기로 보여주고, 시도한 결과는 격자에 누적된다.
 // ============================================================
 
 import { el } from "../ui.js";
@@ -17,7 +18,6 @@ const NS = "http://www.w3.org/2000/svg";
 const P = 23;
 const G = 5;
 const Y = 18;
-const ANSWER = 12;
 
 const SIZE = 460;
 const CX = SIZE / 2;
@@ -45,7 +45,7 @@ export const casino = {
   hints: [
     {
       label: "▸ HINT 01 — 페르마 소정리",
-      text: "23 은 소수. 페르마: g^{22} ≡ 1 (mod 23) 이므로 거듭제곱은 22 주기로 순환.",
+      text: "23 은 소수. 페르마: g^(p−1) ≡ 1 (mod p) 이므로 거듭제곱은 22 주기로 순환.",
     },
     {
       label: "▸ HINT 02 — 원시근",
@@ -53,11 +53,11 @@ export const casino = {
     },
     {
       label: "▸ HINT 03 — 이산 로그",
-      text: "5^x ≡ 18 (mod 23) 인 x. 일반적으로 어려운 문제지만, p=23 에선 직접 거듭제곱.",
+      text: "5^x ≡ 18 (mod 23) 인 x. 큰 p 에선 어려운 문제지만, p = 23 은 거듭제곱으로 풀 만하다.",
     },
     {
-      label: "▸ HINT 04 — 단서",
-      text: "STEP 버튼을 누르며 5¹, 5², 5³, … 의 값을 격자 위에서 추적해라. 마커가 18 에 닿으면 그때의 x.",
+      label: "▸ HINT 04 — 입력 미리보기",
+      text: "입력란에 x 를 적으면 5^x mod 23 의 결과 위치가 격자에 미리 표시된다. 시도한 위치는 보라색으로 누적되어 추론을 도와준다.",
     },
   ],
 
@@ -85,8 +85,8 @@ export const casino = {
       {
         heading: "풀이 절차 (이 방 기준)",
         body: "1) g 가 p 의 원시근인지 확인한다 (이 방은 g = 5, p = 23 으로 보장).\n" +
-              "2) STEP 을 눌러 g¹, g², g³, … 의 값을 mod p 로 차례로 추적한다.\n" +
-              "3) 마커가 목표 y 에 도달했을 때의 지수 x 가 답.",
+              "2) x 를 추측해 입력한 뒤 5^x mod 23 결과 위치를 본다.\n" +
+              "3) 결과가 목표 y 에 닿는 x 를 찾는다.",
       },
       {
         heading: "역방향이 어려운 이유",
@@ -99,7 +99,7 @@ export const casino = {
 
   // ----------------------------------------------------------
   mount(api) {
-    const visited = []; // [{x, val}]
+    const tried = new Map(); // x -> val
 
     const meta = el("div.firewall__meta", {}, [
       el("span", {}, [`p = ${P}  //  g = ${G}  //  target  y = ${Y}`]),
@@ -118,163 +118,152 @@ export const casino = {
       stroke: "rgba(160,140,240,0.12)", "stroke-width": 1,
     }));
 
-    // residue nodes 0..p-1
+    // residue nodes 0..p-1 (built once, restyled per render)
     const node$ = [];
     for (let i = 0; i < P; i++) {
       const a = angleAt(i);
       const nx = CX + Math.cos(a) * R_NODE;
       const ny = CY + Math.sin(a) * R_NODE;
-      const isTarget = i === Y;
       const c = svgEl("circle", {
-        cx: nx, cy: ny, r: isTarget ? 19 : 14,
-        fill: isTarget ? "rgba(93,255,166,0.22)" : "rgba(12,8,28,0.95)",
-        stroke: isTarget ? "var(--success)" : "rgba(160,140,240,0.45)",
-        "stroke-width": isTarget ? 2.5 : 1.5,
+        cx: nx, cy: ny, r: 14,
+        fill: "rgba(12,8,28,0.95)",
+        stroke: "rgba(160,140,240,0.45)",
+        "stroke-width": 1.5,
       });
-      if (isTarget) c.setAttribute("filter", "drop-shadow(0 0 12px rgba(93,255,166,0.7))");
       svg.appendChild(c);
 
       const t = svgEl("text", {
         x: nx, y: ny + 5, "text-anchor": "middle",
-        style: `font-size: 13px; fill: ${isTarget ? "var(--success)" : "var(--fg-dim)"}; font-family: var(--mono); font-weight: ${isTarget ? 700 : 500};`,
+        style: "font-size: 13px; font-family: var(--mono); font-weight: 500; fill: var(--fg-dim);",
       });
       t.textContent = String(i);
       svg.appendChild(t);
       node$.push({ c, t });
     }
 
-    // exponent labels (drawn as we visit)
-    const expLabels = svgEl("g", { class: "exp-labels" });
-    svg.appendChild(expLabels);
-
-    // trail polyline (uses .path-mirror style)
-    const trail = svgEl("polyline", {
-      points: "",
-      fill: "none",
-      stroke: "var(--accent-2)",
-      "stroke-width": 2.5,
-      "stroke-linecap": "round",
-      "stroke-linejoin": "round",
-      opacity: 0.85,
-      filter: "drop-shadow(0 0 4px rgba(181,140,255,0.6))",
-    });
-    svg.appendChild(trail);
-
-    // current marker
+    // preview marker — hidden until the user enters something
     const marker = svgEl("circle", {
-      cx: CX + Math.cos(angleAt(1)) * R_NODE,
-      cy: CY + Math.sin(angleAt(1)) * R_NODE,
-      r: 9, fill: "var(--accent)", stroke: "#fff", "stroke-width": 2,
+      cx: CX, cy: CY - R_NODE, r: 10,
+      fill: "var(--accent)", stroke: "#fff", "stroke-width": 2,
       filter: "drop-shadow(0 0 10px rgba(124,200,255,0.9))",
+      opacity: 0,
     });
     svg.appendChild(marker);
 
-    // center readout
+    // center readout — static target by default
     const centerVal = svgEl("text", {
       x: CX, y: CY - 4, "text-anchor": "middle",
-      style: "font-size: 26px; fill: var(--fg); font-family: var(--mono); font-weight: 700;",
+      style: "font-size: 22px; fill: var(--fg); font-family: var(--mono); font-weight: 700;",
     });
-    centerVal.textContent = `${G}^0 = 1`;
+    centerVal.textContent = `${G}^x  ≡  ${Y}`;
     const centerSub = svgEl("text", {
       x: CX, y: CY + 22, "text-anchor": "middle",
       style: "font-size: 11px; fill: var(--fg-mute); font-family: var(--mono); letter-spacing: 0.25em;",
     });
-    centerSub.textContent = `target = ${Y}`;
+    centerSub.textContent = `(mod ${P})`;
     svg.appendChild(centerVal);
     svg.appendChild(centerSub);
 
     wrap.appendChild(svg);
 
-    const stepBtn  = el("button.btn", { onclick: stepForward }, [`STEP  ×${G}`]);
     const resetBtn = el("button.btn.btn--ghost", { onclick: reset }, ["RESET"]);
-    const controls = el("div.firewall__controls", {}, [stepBtn, resetBtn]);
+    const controls = el("div.firewall__controls", {}, [resetBtn]);
 
     const stage = el("div.firewall", {}, [meta, wrap, controls]);
     api.stage.appendChild(stage);
 
     api.logMany([
       { who: "SYS", text: "양자 카지노 — 소수 23 의 잔여류 순환.", tag: "system" },
-      { who: "OBSERVER", text: `g = ${G} 는 23 의 원시근. ${G}¹, ${G}², … 이 1..22 를 모두 한 번씩 거친다.`, tag: "warn" },
-      { who: "OBSERVER", text: `${G}^x ≡ ${Y} (mod ${P}) 인 x 를 찾아 입력해라.`, tag: "warn" },
+      { who: "OBSERVER", text: `g = ${G} 는 23 의 원시근. 1..22 가 5¹, 5², … 안에 모두 들어 있다.`, tag: "warn" },
+      { who: "SYS",      text: "TIP: 입력란에 x 를 적으면 5^x mod 23 의 결과 위치가 미리 보인다.", tag: "system" },
     ]);
-    api.setInputPlaceholder("x = _");
+    api.setInputPlaceholder("x = ?   (preview live)");
 
     // ----------------------------------------------------------
-    let curX = 0, curVal = 1;
-    visited.push({ x: 0, val: 1 });
-    setMarker(curVal);
-
     function setMarker(val) {
       const a = angleAt(val);
       marker.setAttribute("cx", CX + Math.cos(a) * R_NODE);
       marker.setAttribute("cy", CY + Math.sin(a) * R_NODE);
+      marker.setAttribute("opacity", 1);
     }
+    function hideMarker() { marker.setAttribute("opacity", 0); }
 
-    function redrawTrail() {
-      const pts = visited.map(({ val }) => {
-        const a = angleAt(val);
-        return `${CX + Math.cos(a) * R_NODE},${CY + Math.sin(a) * R_NODE}`;
-      }).join(" ");
-      trail.setAttribute("points", pts);
-    }
-
-    function redrawExpLabels() {
-      // clear
-      while (expLabels.firstChild) expLabels.removeChild(expLabels.firstChild);
-      // small label next to each visited node
-      for (const { x, val } of visited) {
-        if (x === 0) continue;
-        const a = angleAt(val);
-        const lx = CX + Math.cos(a) * (R_NODE + 22);
-        const ly = CY + Math.sin(a) * (R_NODE + 22) + 4;
-        const t = svgEl("text", {
-          x: lx, y: ly, "text-anchor": "middle",
-          style: "font-size: 11px; fill: var(--accent-2); font-family: var(--mono);",
-        });
-        t.textContent = `x=${x}`;
-        expLabels.appendChild(t);
+    function renderNodes() {
+      const hitSet = new Set(tried.values());
+      for (let i = 0; i < P; i++) {
+        const isTarget = i === Y;
+        const wasHit = hitSet.has(i);
+        const { c, t } = node$[i];
+        if (isTarget) {
+          c.setAttribute("r", 18);
+          c.setAttribute("fill", "rgba(93,255,166,0.22)");
+          c.setAttribute("stroke", "var(--success)");
+          c.setAttribute("stroke-width", 2.5);
+          c.setAttribute("filter", "drop-shadow(0 0 10px rgba(93,255,166,0.7))");
+          t.style.fill = "var(--success)";
+          t.style.fontWeight = "700";
+        } else if (wasHit) {
+          c.setAttribute("r", 14);
+          c.setAttribute("fill", "rgba(181,140,255,0.22)");
+          c.setAttribute("stroke", "var(--accent-2)");
+          c.setAttribute("stroke-width", 2);
+          c.setAttribute("filter", "drop-shadow(0 0 6px rgba(181,140,255,0.45))");
+          t.style.fill = "var(--fg)";
+          t.style.fontWeight = "600";
+        } else {
+          c.setAttribute("r", 14);
+          c.setAttribute("fill", "rgba(12,8,28,0.95)");
+          c.setAttribute("stroke", "rgba(160,140,240,0.45)");
+          c.setAttribute("stroke-width", 1.5);
+          c.removeAttribute("filter");
+          t.style.fill = "var(--fg-dim)";
+          t.style.fontWeight = "500";
+        }
       }
     }
 
-    function stepForward() {
-      if (curX >= P - 1) {
-        api.toast("이미 한 사이클을 돌았다", "warn");
-        return;
-      }
-      curX++;
-      curVal = (curVal * G) % P;
-      visited.push({ x: curX, val: curVal });
-      audio.step();
-      setMarker(curVal);
-      redrawTrail();
-      redrawExpLabels();
-      centerVal.textContent = `${G}^${curX} = ${curVal}`;
-      if (curVal === Y) {
-        api.log({ who: "SYS", text: `▷ ${G}^${curX} = ${Y}. 입력값에 ${curX} 을 넣으면 봉인 해제.`, tag: "ok", delay: 80 });
-      } else if (curX === 1) {
-        api.log({ who: "SYS", text: `▷ ${G}^1 = ${G}. 매 스텝마다 ×${G} mod ${P}.`, tag: "system", delay: 80 });
-      }
+    function compute(x) {
+      let v = 1;
+      for (let i = 0; i < x; i++) v = (v * G) % P;
+      return v;
     }
 
     function reset() {
       audio.click();
-      curX = 0; curVal = 1;
-      visited.length = 0;
-      visited.push({ x: 0, val: 1 });
-      setMarker(1);
-      redrawTrail();
-      redrawExpLabels();
-      centerVal.textContent = `${G}^0 = 1`;
+      tried.clear();
+      hideMarker();
+      centerVal.textContent = `${G}^x  ≡  ${Y}`;
+      renderNodes();
     }
+
+    // live preview from the answer input
+    const inputEl = document.querySelector(".input");
+    if (inputEl) {
+      inputEl.addEventListener("input", () => {
+        const raw = inputEl.value.trim();
+        if (raw === "") {
+          hideMarker();
+          centerVal.textContent = `${G}^x  ≡  ${Y}`;
+          return;
+        }
+        const x = Number(raw);
+        if (!Number.isInteger(x) || x < 0 || x > 999) return;
+        const v = compute(x);
+        tried.set(x, v);
+        setMarker(v);
+        centerVal.textContent = `→  ${v}`;
+        renderNodes();
+        audio.tick();
+      });
+    }
+
+    renderNodes();
 
     // -- check --
     api.check = (raw) => {
       const x = Number(raw);
       if (!Number.isInteger(x) || x < 0) return false;
-      // compute g^x mod p
-      let v = 1;
-      for (let i = 0; i < x; i++) v = (v * G) % P;
-      return v === Y;
+      return compute(x) === Y;
     };
   },
 };

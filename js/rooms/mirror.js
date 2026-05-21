@@ -111,12 +111,11 @@ export const mirror = {
     }
 
     const resetBtn = el("button.btn.btn--ghost.btn--small", { onclick: reset }, ["RESET"]);
-    const autoBtn  = el("button.btn.btn--ghost.btn--small", { onclick: autoSeed }, ["SEED  2 · 3 · 5 · 7"]);
 
     const stage = el("div.firewall", {}, [
       meta,
       grid,
-      el("div.firewall__controls", {}, [autoBtn, resetBtn]),
+      el("div.firewall__controls", {}, [resetBtn]),
       el("div.mirror__legend.mono", {}, [
         el("span", {}, ["click → mark multiples"]),
         el("span.accent", {}, ["■ prime"]),
@@ -143,11 +142,6 @@ export const mirror = {
       for (let m = 2 * n; m <= N_MAX; m += n) composite.add(m);
       cells[n - 1].classList.add("seed");
       render();
-    }
-
-    function autoSeed() {
-      audio.click();
-      [2, 3, 5, 7].forEach((p) => onClick(p));
     }
 
     function reset() {
