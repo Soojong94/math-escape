@@ -65,21 +65,27 @@ export const temple = {
     title: "중국인의 나머지 정리 (CRT)",
     sections: [
       {
-        heading: "정리 — 손자 (3 ~ 5 세기 중국)",
-        body: "m₁, m₂, …, mₖ 가 *두 쌍씩 서로소* 이면, " +
-              "임의의 r₁, …, rₖ 에 대해 다음 연립 합동식은 " +
-              "mod M = ∏ mᵢ 안에 *유일한* 해 X 를 가진다.",
+        heading: "LV.1 — 기초: 나머지 (mod) 연산",
+        body: "정수 a 를 양의 정수 m 으로 나눈 *나머지* 를 a mod m 으로 쓴다. " +
+              "0 ≤ a mod m < m. 같은 나머지를 가지면 \"합동\" 이라 한다.",
+        formula: "a ≡ b  (mod m)   ⇔   m | (a − b)",
+      },
+      {
+        heading: "LV.2 — 서로소와 모듈러 역원",
+        body: "두 수의 공약수가 1 뿐일 때 \"서로소\" (gcd = 1). " +
+              "gcd(a, m) = 1 이면 a · x ≡ 1 (mod m) 인 x 가 *유일하게* 존재 — 이 x 가 a 의 모듈러 역원. " +
+              "확장 유클리드 알고리즘으로 계산.",
+      },
+      {
+        heading: "LV.3 — 중국인의 나머지 정리 (3~5세기 손자)",
+        body: "모듈러스 m₁, m₂, …, mₖ 가 *두 쌍씩 서로소* 이면, 임의의 r₁, …, rₖ 에 대해 " +
+              "다음 연립 합동식은 mod M = ∏ mᵢ 안에 *유일한* 해 X 를 가진다.",
         formula: "X ≡ r₁ (mod m₁)\nX ≡ r₂ (mod m₂)\n     ⋮\nX ≡ rₖ (mod mₖ)",
       },
       {
         heading: "결합 공식",
-        body: "Mᵢ = M / mᵢ 로 두고, yᵢ ≡ Mᵢ⁻¹ (mod mᵢ) 인 모듈러 역원을 구한다.",
+        body: "Mᵢ = M / mᵢ 와 yᵢ ≡ Mᵢ⁻¹ (mod mᵢ) 를 구해 가중합.",
         formula: "X  ≡  Σᵢ  rᵢ · Mᵢ · yᵢ   (mod M)",
-      },
-      {
-        heading: "모듈러 역원이란",
-        body: "a · x ≡ 1 (mod m) 인 x 를 a 의 모듈러 역원이라 한다. " +
-              "gcd(a, m) = 1 일 때만 존재. 확장 유클리드 알고리즘으로 계산.",
       },
       {
         heading: "풀이 절차 (이 방 기준)",

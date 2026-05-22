@@ -65,28 +65,26 @@ export const casino = {
     title: "페르마 소정리 · 이산 로그",
     sections: [
       {
-        heading: "페르마 소정리 (1640)",
-        body: "p 가 소수이고 gcd(a, p) = 1 이면 다음이 성립.",
+        heading: "LV.1 — 기초: 거듭제곱과 mod",
+        body: "aⁿ 은 a 를 n 번 곱한 것. *큰 수* 도 매번 mod p 로 줄여서 계산하면 작은 정수 안에서 유지된다.",
+        formula: "(a · b) mod p  =  ( (a mod p) · (b mod p) ) mod p",
+      },
+      {
+        heading: "LV.2 — 페르마 소정리 (1640)",
+        body: "p 가 소수이고 a 가 p 로 나누어떨어지지 않으면 a 를 (p − 1) 제곱한 결과는 mod p 에서 1.",
         formula: "a^(p − 1)  ≡  1   (mod p)",
         note: "곧 a 의 거듭제곱은 mod p 에서 최대 (p − 1) 주기로 순환.",
       },
       {
-        heading: "원시근 (primitive root)",
-        body: "g^x mod p 가 x = 1, 2, …, p − 1 에 대해 1 부터 p − 1 까지의 모든 값을 *한 번씩* 거치면 " +
-              "g 를 p 의 원시근이라 한다.",
-        formula: "ord_p(g)  =  p − 1",
-      },
-      {
-        heading: "이산 로그 문제 (DLP)",
-        body: "주어진 g, y, p 에 대해 다음을 만족하는 x 를 구하는 문제.",
+        heading: "LV.3 — 원시근과 이산 로그",
+        body: "g 의 거듭제곱이 1, 2, …, p − 1 을 *전부 한 번씩* 거치면 g 를 p 의 원시근. " +
+              "g^x ≡ y (mod p) 인 x 를 찾는 문제가 이산 로그 (DLP).",
         formula: "g^x  ≡  y   (mod p)",
-        note: "큰 p 에서는 알려진 효율적 알고리즘이 없음. 이 어려움이 Diffie-Hellman 키 교환, ElGamal, ECDSA, 비트코인 서명의 기반.",
       },
       {
-        heading: "풀이 절차 (이 방 기준)",
-        body: "1) g 가 p 의 원시근인지 확인한다 (이 방은 g = 5, p = 23 으로 보장).\n" +
-              "2) x 를 추측해 입력한 뒤 5^x mod 23 결과 위치를 본다.\n" +
-              "3) 결과가 목표 y 에 닿는 x 를 찾는다.",
+        heading: "왜 이산 로그가 어려운가",
+        body: "큰 p 에서는 알려진 효율적 알고리즘이 없다. " +
+              "Diffie-Hellman 키 교환, ElGamal, ECDSA, 비트코인 서명의 기반.",
       },
       {
         heading: "역방향이 어려운 이유",

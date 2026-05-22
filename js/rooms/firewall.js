@@ -63,6 +63,24 @@ export const firewall = {
     title: "조합론과 격자 경로",
     sections: [
       {
+        heading: "LV.1 — 기초: 팩토리얼",
+        body: "1 부터 n 까지의 자연수를 모두 곱한 것이 팩토리얼 n!. " +
+              "n 개의 서로 다른 물건을 한 줄로 세우는 방법의 수.",
+        formula: "n!  =  1 · 2 · 3 · … · n         (관습으로 0! = 1)",
+      },
+      {
+        heading: "LV.2 — 순열과 조합",
+        body: "n 개 중 k 개를 *순서 있게* 뽑기 = 순열 P(n,k). " +
+              "*순서 없이* (어느 것을 뽑았는가만) 뽑기 = 조합 C(n,k).",
+        formula: "C(n, k)  =  n! / ( k! · (n − k)! )",
+      },
+      {
+        heading: "LV.3 — 격자 경로의 환원",
+        body: "(0,0) 에서 (a, b) 까지 → / ↑ 만으로 가는 경로 = " +
+              "총 (a + b) 걸음 중 → 가 들어갈 a 개의 자리를 고르는 일. 곧 격자 경로 = 조합 문제.",
+        formula: "P(a, b)  =  C(a + b, a)",
+      },
+      {
         heading: "조합 (binomial coefficient)",
         body: "n 개의 서로 다른 것 중에서 k 개를 *순서 없이* 고르는 방법의 수.",
         formula: "C(n, k) = n! / ( k! · (n − k)! )",
