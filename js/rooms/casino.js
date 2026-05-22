@@ -65,18 +65,21 @@ export const casino = {
     title: "페르마 소정리 · 이산 로그",
     sections: [
       {
-        heading: "LV.1 — 기초: 거듭제곱과 mod",
+        level: 1,
+        heading: "기초: 거듭제곱과 mod",
         body: "aⁿ 은 a 를 n 번 곱한 것. *큰 수* 도 매번 mod p 로 줄여서 계산하면 작은 정수 안에서 유지된다.",
         formula: "(a · b) mod p  =  ( (a mod p) · (b mod p) ) mod p",
       },
       {
-        heading: "LV.2 — 페르마 소정리 (1640)",
+        level: 2,
+        heading: "페르마 소정리 (1640)",
         body: "p 가 소수이고 a 가 p 로 나누어떨어지지 않으면 a 를 (p − 1) 제곱한 결과는 mod p 에서 1.",
         formula: "a^(p − 1)  ≡  1   (mod p)",
         note: "곧 a 의 거듭제곱은 mod p 에서 최대 (p − 1) 주기로 순환.",
       },
       {
-        heading: "LV.3 — 원시근과 이산 로그",
+        level: 3,
+        heading: "원시근과 이산 로그",
         body: "g 의 거듭제곱이 1, 2, …, p − 1 을 *전부 한 번씩* 거치면 g 를 p 의 원시근. " +
               "g^x ≡ y (mod p) 인 x 를 찾는 문제가 이산 로그 (DLP).",
         formula: "g^x  ≡  y   (mod p)",

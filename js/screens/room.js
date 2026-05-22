@@ -142,11 +142,16 @@ function openLesson(room) {
 
   const sections = (l.sections || []).map((s) => {
     const blocks = [];
+    if (s.level) blocks.push(el("div.lesson__level.mono", {}, [`LEVEL ${s.level}`]));
     if (s.heading) blocks.push(el("h4.lesson__heading", {}, [s.heading]));
     if (s.body) blocks.push(el("p.lesson__body", { html: s.body }));
     if (s.formula) blocks.push(el("pre.lesson__formula.mono", {}, [s.formula]));
     if (s.note) blocks.push(el("div.lesson__note.mono", {}, [s.note]));
-    return el("section.lesson__section", {}, blocks);
+    return el(
+      "section.lesson__section" + (s.level ? ` lesson__section--lv${s.level}` : ""),
+      {},
+      blocks
+    );
   });
 
   const closeBtn = el("button.btn.btn--ghost.btn--small", {

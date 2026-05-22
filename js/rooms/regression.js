@@ -91,17 +91,20 @@ export const regression = {
     title: "최소제곱 회귀와 MSE",
     sections: [
       {
-        heading: "LV.1 — 기초: 산점도와 평균",
+        level: 1,
+        heading: "기초: 산점도와 평균",
         body: "여러 데이터 (x, y) 를 좌표평면에 점으로 찍은 것이 산점도. " +
               "x 들의 평균 x̄ = (1/n) Σ xᵢ. 데이터의 \"중심\" 을 한 수로 요약.",
       },
       {
-        heading: "LV.2 — 직선의 방정식",
+        level: 2,
+        heading: "직선의 방정식",
         body: "기울기 m 과 y 절편 b 로 정해지는 직선 y = m · x + b. " +
               "회귀의 핵심 질문: 어떤 (m, b) 가 데이터를 \"가장 잘\" 설명할까.",
       },
       {
-        heading: "LV.3 — MSE 와 최소제곱",
+        level: 3,
+        heading: "MSE 와 최소제곱",
         body: "각 데이터 점에서 직선까지의 *수직 거리* 를 잔차, 잔차의 제곱 평균을 MSE 라 한다. " +
               "MSE 를 가장 작게 만드는 (m, b) 가 \"최적 회귀선\".",
         formula: "MSE  =  (1/n) · Σᵢ ( m·xᵢ + b − yᵢ )²",

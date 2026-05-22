@@ -59,17 +59,20 @@ export const recursion = {
     title: "점화식과 피보나치 — 분할의 미학",
     sections: [
       {
-        heading: "LV.1 — 기초: 수열",
+        level: 1,
+        heading: "기초: 수열",
         body: "어떤 규칙으로 정해지는 수의 나열. a₁, a₂, a₃, … 각 항을 인덱스 (n) 으로 부른다.",
       },
       {
-        heading: "LV.2 — 점화식 (recurrence relation)",
+        level: 2,
+        heading: "점화식 (recurrence relation)",
         body: "다음 항을 *앞 항들* 로 정의하는 방식. " +
               "전체 답을 한 번에 풀지 않고, 작은 사례에서 큰 사례로 *쌓아 올린다*.",
         formula: "예:  f(n)  =  f(n − 1) + f(n − 2),   f(1) = f(2) = 1",
       },
       {
-        heading: "LV.3 — 이 문제의 분할",
+        level: 3,
+        heading: "이 문제의 분할",
         body: "n 칸 계단 정상에 도착하는 마지막 점프는 *1 칸* 이거나 *2 칸*. " +
               "두 경우는 겹치지 않고, 각각 (n−1) 칸 정상까지 가는 경로와 (n−2) 칸 정상까지 가는 경로에 대응. " +
               "큰 문제가 두 개의 더 작은 문제로 *깔끔히 분할*.",

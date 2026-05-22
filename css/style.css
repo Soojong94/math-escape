@@ -1297,13 +1297,47 @@ body {
 
 .lesson__section + .lesson__section { margin-top: 22px; }
 
-.lesson__heading {
-  margin: 0 0 8px;
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: 0.22em;
-  color: var(--accent-2);
+/* Sections marked with a LEVEL get a left-rail accent so the
+   "토대 → 다리 → 주제" progression is visible at a glance. */
+.lesson__section--lv1,
+.lesson__section--lv2,
+.lesson__section--lv3 {
+  position: relative;
+  padding: 14px 16px 14px 18px;
+  border-radius: var(--radius-sm);
+  background: rgba(124, 200, 255, 0.04);
+  border-left: 3px solid var(--accent);
+  margin-top: 18px;
+}
+.lesson__section--lv2 { border-left-color: #a3a3ff; background: rgba(150, 130, 240, 0.05); }
+.lesson__section--lv3 {
+  border-left-color: var(--accent-2);
+  background: rgba(181, 140, 255, 0.06);
+}
+
+.lesson__level {
+  display: inline-block;
+  padding: 4px 12px;
+  margin-bottom: 10px;
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #fff;
+  border-radius: 999px;
+  font-weight: 700;
   text-transform: uppercase;
+}
+.lesson__section--lv1 .lesson__level { background: var(--accent); }
+.lesson__section--lv2 .lesson__level { background: linear-gradient(135deg, var(--accent), var(--accent-2)); }
+.lesson__section--lv3 .lesson__level { background: var(--accent-2); }
+
+.lesson__heading {
+  margin: 0 0 10px;
+  font-family: var(--mono);
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  color: var(--fg);
+  font-weight: 600;
 }
 
 .lesson__body {
